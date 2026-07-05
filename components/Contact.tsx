@@ -21,7 +21,7 @@ export default function Contact() {
     <section id="contact" aria-labelledby="contact-heading" className="pt-24 md:pt-36">
       <div className="mx-auto max-w-7xl px-6">
         <p className="text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-          04 — Contact
+          08 — Contact
         </p>
         <h2
           id="contact-heading"
