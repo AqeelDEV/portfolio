@@ -25,16 +25,21 @@ export const STAR_PARALLAX = 0.35;
 // drifting apart when the page structure or thresholds are tuned.
 export const SECTION_SELECTORS = {
   about: "#positioning",
+  skills: "#skills",
   work: "#work",
   projects: "#projects",
+  education: "#education",
+  certifications: "#certifications",
+  beyond: "#beyond",
   contact: "#contact",
 } as const;
 
 /** Trigger window inside which a section owns the ambient palette. */
 export const SECTION_ACTIVE = { start: "top 55%", end: "bottom 45%" } as const;
 
-/** The below-fold ramp: spans the Marquee gap between About and Experience.
- *  ASSUMES nothing is pinned above #work (see EnvDriver for the full note). */
+/** The below-fold ramp: spans the Marquee + Skills gap between About and
+ *  Experience. ASSUMES nothing is pinned above #work (see EnvDriver for the
+ *  full note) — Skills must never pin. */
 export const BELOW_RAMP = {
   trigger: SECTION_SELECTORS.work,
   start: "top bottom",
