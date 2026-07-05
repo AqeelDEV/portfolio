@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #070708;
+  --color-ink-2: #0d0e12;
+  --color-accent: #28e0d0;
+  --color-accent-2: #8b5cf6;
+  --color-magenta: #e26bf5;
+}
+
+@theme inline {
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+}
+
+/* Chromatic-aberration edge on display type */
+@utility chromatic {
+  text-shadow:
+    0.028em 0 0 rgba(40, 224, 208, 0.55),
+    -0.028em 0 0 rgba(226, 107, 245, 0.55);
+}
+
+/* Hollow display type for the kinetic marquee */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+}
+
+/* Film grain — one fixed layer over everything */
+@utility grain {
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Cinematic vignette — one fixed layer, darkens the frame edges to ink */
+@utility vignette {
+  background: radial-gradient(
+    120% 90% at 50% 45%,
+    transparent 60%,
+    rgba(7, 7, 8, 0.5) 100%
+  );
+}
+
+/* Frosted glass panel — the core surface of the design */
+@utility glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Ambient section glow — GSAP tweens transform/opacity only, so every
+   transition is compositor work. The gradient falloff replaces filter:blur
+   (free), and no will-change: the compositor promotes transform-animated
+   elements for the duration of a tween on its own. */
+@utility glow-orb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 95vmin;
+  height: 95vmin;
+  margin: -47.5vmin 0 0 -47.5vmin;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--orb-color), transparent 70%);
+  opacity: 0; /* SSR default — invisible over the hero, no flash */
+}
+
+body {
+  background: var(--color-ink);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-sans);
+  min-height: 100svh;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Card → detail morph (View Transitions API) */
+::view-transition-group(*) {
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
