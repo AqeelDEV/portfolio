@@ -28,6 +28,11 @@ const STATES: Record<string, Palette> = {
     violet: { x: "-30vw", y: "25vh", opacity: 0.04 },
     magenta: { opacity: 0 },
   },
+  skills: {
+    cyan: { x: "-22vw", y: "18vh", opacity: 0.08 },
+    violet: { x: "24vw", y: "-20vh", opacity: 0.03 },
+    magenta: { opacity: 0 },
+  },
   work: {
     cyan: { x: "26vw", y: "30vh", opacity: 0.03 },
     violet: { x: "-20vw", y: "-12vh", opacity: 0.09 },
@@ -37,6 +42,21 @@ const STATES: Record<string, Palette> = {
     cyan: { opacity: 0 },
     violet: { x: "-26vw", y: "20vh", opacity: 0.04 },
     magenta: { x: "20vw", y: "-14vh", opacity: 0.08 },
+  },
+  education: {
+    cyan: { x: "24vw", y: "22vh", opacity: 0.03 },
+    violet: { x: "-24vw", y: "-18vh", opacity: 0.09 },
+    magenta: { opacity: 0 },
+  },
+  certifications: {
+    cyan: { x: "-20vw", y: "-20vh", opacity: 0.07 },
+    violet: { opacity: 0 },
+    magenta: { x: "26vw", y: "22vh", opacity: 0.03 },
+  },
+  beyond: {
+    cyan: { opacity: 0 },
+    violet: { x: "24vw", y: "20vh", opacity: 0.03 },
+    magenta: { x: "-22vw", y: "-16vh", opacity: 0.08 },
   },
   contact: {
     cyan: { x: "0vw", y: "20vh", opacity: 0.09 },
@@ -50,8 +70,12 @@ const STATES: Record<string, Palette> = {
 // WebGL recovery can't drift apart when boundaries are tuned.
 const SECTIONS: [selector: string, state: keyof typeof STATES][] = [
   [SECTION_SELECTORS.about, "about"],
+  [SECTION_SELECTORS.skills, "skills"],
   [SECTION_SELECTORS.work, "work"],
   [SECTION_SELECTORS.projects, "projects"],
+  [SECTION_SELECTORS.education, "education"],
+  [SECTION_SELECTORS.certifications, "certifications"],
+  [SECTION_SELECTORS.beyond, "beyond"],
   [SECTION_SELECTORS.contact, "contact"],
 ];
 
