@@ -85,7 +85,7 @@ export default function ScrollHUD() {
           01
         </span>
         <span className="h-px w-6 bg-white/25" />
-        <span ref={total}>05</span>
+        <span ref={total}>09</span>
       </div>
     </div>
   );

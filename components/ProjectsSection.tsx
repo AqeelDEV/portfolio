@@ -3,6 +3,6 @@ import WorkGallery from "./WorkGallery";
 
 export default function ProjectsSection() {
   return (
-    <WorkGallery id="projects" number="03" title="Projects" items={projects} />
+    <WorkGallery id="projects" number="04" title="Projects" items={projects} />
   );
 }

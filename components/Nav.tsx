@@ -12,14 +12,31 @@ export default function Nav() {
       </Link>
       <nav
         aria-label="Primary"
-        className="glass flex items-center gap-5 rounded-full px-6 py-3 text-[0.7rem] uppercase tracking-[0.25em]"
+        className="glass flex items-center gap-6 rounded-full px-6 py-3 text-[0.7rem] uppercase tracking-[0.25em] md:gap-9"
       >
+        <Magnetic>
+          <Link href="/#skills" className="text-white/70 transition-colors hover:text-white">
+            Skills
+          </Link>
+        </Magnetic>
         <Magnetic>
           <Link href="/#work" className="text-white/70 transition-colors hover:text-white">
             Work
           </Link>
         </Magnetic>
-        <span aria-hidden className="h-px w-8 bg-white/20" />
+        {/* Secondary anchors stay desktop-only so the pill fits small screens */}
+        <span className="hidden md:contents">
+          <Magnetic>
+            <Link href="/#education" className="text-white/70 transition-colors hover:text-white">
+              Education
+            </Link>
+          </Magnetic>
+          <Magnetic>
+            <Link href="/#beyond" className="text-white/70 transition-colors hover:text-white">
+              Beyond
+            </Link>
+          </Magnetic>
+        </span>
         <Magnetic>
           <Link href="/#contact" className="text-white/70 transition-colors hover:text-white">
             Contact
