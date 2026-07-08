@@ -49,12 +49,12 @@ export default function Hero() {
           Portfolio
         </p>
         <h1 className="chromatic text-center font-display text-[clamp(3rem,11vw,9.5rem)] font-bold uppercase leading-[0.92] tracking-tight text-white">
-          <Reveal delay={0.15} charSplit={false}>
+          <Reveal delay={0.15} charSplit={false} waitForIntro>
             {site.name}
           </Reveal>
         </h1>
         <p className="mt-8 font-display text-sm font-bold uppercase tracking-[0.45em] text-accent md:text-base">
-          <Reveal delay={0.45} charSplit={false}>
+          <Reveal delay={0.45} charSplit={false} waitForIntro>
             {site.tagline}
           </Reveal>
         </p>

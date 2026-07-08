@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
+import { Component, Suspense, useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { MeshTransmissionMaterial, useTexture } from "@react-three/drei";
+import { MeshTransmissionMaterial, useProgress, useTexture } from "@react-three/drei";
 import {
   morph,
   phase,
@@ -20,6 +20,7 @@ import {
   FLUID_FADE,
 } from "@/lib/morph";
 import { env, STAR_RESIDUAL, FLUID_RESIDUAL, STAR_PARALLAX } from "@/lib/env";
+import { markProgress, markReady } from "@/lib/loader";
 import { BP_DESKTOP } from "@/lib/motion";
 import { ACCENT_RGB, ACCENT_2_RGB, MAGENTA_RGB } from "@/lib/palette";
 import { site } from "@/lib/content";
@@ -475,11 +476,56 @@ function GlassRing() {
           />
         </mesh>
       </group>
-      <Suspense fallback={null}>
-        <PortraitAperture />
-      </Suspense>
+      <PortraitBoundary>
+        <Suspense fallback={null}>
+          <PortraitAperture />
+          {/* Suspense children only commit once useTexture resolves, so this
+              mounting ≡ the portrait loaded — the intro's ready signal */}
+          <SceneReady />
+        </Suspense>
+      </PortraitBoundary>
     </group>
   );
+}
+
+// A failed portrait texture must not take the app down: without a boundary
+// the useTexture rejection unmounts the entire React root (blank site). The
+// scene simply continues without the aperture, and the intro is released
+// (markReady) since there is nothing left to wait for.
+class PortraitBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    markReady();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+// Intro-preloader signals (lib/loader.ts). SceneReady lives inside the
+// portrait's Suspense boundary; LoaderBridge relays DefaultLoadingManager
+// progress (useProgress is a plain store — works outside the Canvas).
+function SceneReady() {
+  useEffect(() => {
+    markReady();
+  }, []);
+  return null;
+}
+
+function LoaderBridge({ isMobile }: { isMobile: boolean }) {
+  const progress = useProgress((s) => s.progress); // 0..100
+  useEffect(() => {
+    markProgress(progress / 100);
+  }, [progress]);
+  // Mobile never mounts GlassRing → PortraitAperture → useTexture: there is
+  // no async asset at all, so the intro has nothing to wait for.
+  useEffect(() => {
+    if (isMobile) markReady();
+  }, [isMobile]);
+  return null;
 }
 
 // Deterministic PRNG — render-pure, and the dust field is stable across
@@ -585,28 +631,31 @@ export default function HeroCanvasInner({ active }: { active: boolean }) {
   }, [isMobile]);
 
   return (
-    <Canvas
-      frameloop={active ? "always" : "never"}
-      dpr={[1, 1.5]}
-      camera={{ position: [0, 0, 2.6], fov: 45 }}
-      // alpha: the fluid fades to transparent as the torus travels over the
-      // About section. eventSource: the wrapper is pointer-events-none, so
-      // the pointer (Rig / ring sway) is read from the body instead.
-      gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
-      eventSource={typeof document !== "undefined" ? document.body : undefined}
-      eventPrefix="client"
-    >
-      <MorphSmoother />
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[2, 3, 4]} intensity={1.1} />
-      {/* coloured speculars give the glass its iridescent edges */}
-      <pointLight position={[2.2, 1.2, 2]} intensity={6} color={`rgb(${ACCENT_RGB})`} />
-      <pointLight position={[-2.2, -1, 1.6]} intensity={5} color={`rgb(${MAGENTA_RGB})`} />
-      <FluidPlane />
-      {!isMobile && <GlassRing />}
-      <Rig>
-        <Particles count={isMobile ? 200 : 550} />
-      </Rig>
-    </Canvas>
+    <>
+      <LoaderBridge isMobile={isMobile} />
+      <Canvas
+        frameloop={active ? "always" : "never"}
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 0, 2.6], fov: 45 }}
+        // alpha: the fluid fades to transparent as the torus travels over the
+        // About section. eventSource: the wrapper is pointer-events-none, so
+        // the pointer (Rig / ring sway) is read from the body instead.
+        gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
+        eventSource={typeof document !== "undefined" ? document.body : undefined}
+        eventPrefix="client"
+      >
+        <MorphSmoother />
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[2, 3, 4]} intensity={1.1} />
+        {/* coloured speculars give the glass its iridescent edges */}
+        <pointLight position={[2.2, 1.2, 2]} intensity={6} color={`rgb(${ACCENT_RGB})`} />
+        <pointLight position={[-2.2, -1, 1.6]} intensity={5} color={`rgb(${MAGENTA_RGB})`} />
+        <FluidPlane />
+        {!isMobile && <GlassRing />}
+        <Rig>
+          <Particles count={isMobile ? 200 : 550} />
+        </Rig>
+      </Canvas>
+    </>
   );
 }

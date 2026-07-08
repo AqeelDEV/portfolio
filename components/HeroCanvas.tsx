@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { BP_DESKTOP, MOTION_REDUCE } from "@/lib/motion";
+import { markCanvasSkipped } from "@/lib/loader";
 
 // three/r3f live in their own chunk — loaded only when we decide to mount
 const Scene = dynamic(() => import("./HeroCanvasInner"), { ssr: false });
@@ -48,10 +49,17 @@ export default function HeroCanvas() {
   const desktop = useSyncExternalStore(subscribeDesktop, readDesktop, () => false);
 
   useEffect(() => {
-    if (window.matchMedia(MOTION_REDUCE).matches) return;
+    // Bail paths tell the intro there is nothing to wait for
+    if (window.matchMedia(MOTION_REDUCE).matches) {
+      markCanvasSkipped();
+      return;
+    }
 
     const probe = document.createElement("canvas");
-    if (!probe.getContext("webgl2") && !probe.getContext("webgl")) return;
+    if (!probe.getContext("webgl2") && !probe.getContext("webgl")) {
+      markCanvasSkipped();
+      return;
+    }
 
     if ("requestIdleCallback" in window) {
       const id = requestIdleCallback(() => setMounted(true), { timeout: 1500 });

@@ -12,6 +12,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MOTION_REDUCE } from "@/lib/motion";
+import { loader } from "@/lib/loader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +32,11 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (window.matchMedia(MOTION_REDUCE).matches) return;
 
     const instance = new Lenis({ autoRaf: false, lerp: 0.1 });
+    // The intro preloader locks scroll while it plays. Checking the flag at
+    // creation makes both orders safe: created before the intro exits →
+    // starts stopped (IntroOverlay starts it); after → introDone is already
+    // true and it starts running.
+    if (!loader.introDone) instance.stop();
     instance.on("scroll", ScrollTrigger.update);
 
     // gsap ticker reports seconds; lenis.raf wants milliseconds

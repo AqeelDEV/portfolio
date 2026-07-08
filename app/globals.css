@@ -66,6 +66,19 @@
   opacity: 0; /* SSR default — invisible over the hero, no flash */
 }
 
+/* Guard against horizontal scroll from decorative overflow: oversized display
+   type, GSAP x-transforms (ambient orbs, marquee), letter-spacing trailing
+   space on uppercase labels, and the classic-scrollbar / 100vw delta on
+   Windows. Both html AND body are needed — Chromium doesn't propagate `clip`
+   from the root to the viewport, so clipping html alone leaves the page
+   horizontally scrollable. `clip` (not `hidden`) creates no scroll container
+   and, paired with the default overflow-y: visible, is never coerced to auto,
+   so vertical scroll, position:sticky and ScrollTrigger pinning stay intact. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--color-ink);
   color: rgba(255, 255, 255, 0.85);
@@ -96,6 +109,37 @@ body {
     box-shadow: 0 0 0 6px rgba(40, 224, 208, 0);
     opacity: 0.6;
   }
+}
+
+/* ── Intro preloader (components/IntroOverlay.tsx) ─────────────────────── */
+
+/* Repeat visits within a session: the pre-paint script in layout.tsx sets
+   this attribute before the overlay markup parses — zero-flash skip */
+html[data-intro="skip"] #intro-overlay {
+  display: none;
+}
+
+/* Strokes hidden pre-JS. pathLength=1 normalizes every path; the "1 2"
+   dash pattern keeps a full gap-length of margin on both sides of the
+   boundary so round linecaps can't leak a dot at offset 1 (a dasharray
+   of plain 1 puts the dash edge exactly at the path start). GSAP draws
+   by tweening stroke-dashoffset to 0. */
+#intro-overlay :is([data-echo-m], [data-echo-v], [data-main]) path {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+
+/* Last-resort, pure-CSS escape hatch: if hydration never runs (chunk
+   failure), the overlay still gets out of the way. Normal operation
+   removes the overlay from the DOM long before the 7s delay elapses. */
+@keyframes intro-fallback {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+#intro-overlay {
+  animation: intro-fallback 0.6s ease 7s forwards;
 }
 
 /* Card → detail morph (View Transitions API) */
