@@ -11,7 +11,7 @@ export default function EducationSection() {
     >
       <div className="mx-auto max-w-7xl px-6">
         <p className="mb-4 text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-          05 — Education
+          05 · Education
         </p>
         <h2
           id="education-heading"

@@ -34,7 +34,7 @@ export default function Marquee({ text }: { text: string }) {
     { scope: ref }
   );
 
-  const row = Array(6).fill(text).join("  —  ");
+  const row = Array(6).fill(text).join("  •  ");
 
   // The text lives in pseudo-element content: real enough to paint, but no
   // text node for AT, find-in-page or contrast auditing — it's decoration.
