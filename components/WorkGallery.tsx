@@ -22,7 +22,7 @@ export default function WorkGallery({ id, number, title, items }: Props) {
         heading={
           <>
             <p className="mb-4 text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-              {number} — {title}
+              {number} · {title}
             </p>
             <h2
               id={`${id}-heading`}
