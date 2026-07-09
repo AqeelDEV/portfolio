@@ -11,7 +11,7 @@ export default function CertificationsSection() {
     >
       <div className="mx-auto max-w-7xl px-6">
         <p className="mb-4 text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-          06 — Certifications
+          06 · Certifications
         </p>
         <h2
           id="certifications-heading"
