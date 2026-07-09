@@ -16,7 +16,7 @@ export default function PositioningStrip() {
       <div className="grid items-center gap-14 md:grid-cols-[3fr_2fr]">
         <ScrubFade trigger="#positioning" start="top 70%" end="top 30%">
           <p className="mb-5 text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-            01 — About
+            01 · About
           </p>
           <h2
             id="positioning-heading"
