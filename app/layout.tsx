@@ -24,10 +24,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${site.name} — ${site.tagline}`,
+  title: `${site.name} · ${site.tagline}`,
   description: site.oneLiner,
   openGraph: {
-    title: `${site.name} — ${site.tagline}`,
+    title: `${site.name} · ${site.tagline}`,
     description: site.oneLiner,
     type: "website",
   },

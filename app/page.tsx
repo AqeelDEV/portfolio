@@ -18,15 +18,15 @@ export default function Home() {
       <Hero />
       <EnvDriver />
       <PositioningStrip />
-      <Marquee text="Backend — Cloud — Frontend — Applied AI" />
+      <Marquee text="Backend · Cloud · Frontend · Applied AI" />
       <SkillsSection />
       <ExperienceSection />
       <ProjectsSection />
-      <Marquee text="Learning — Leading — Competing" />
+      <Marquee text="Learning · Leading · Competing" />
       <EducationSection />
       <CertificationsSection />
       <BeyondSection />
-      <Marquee text="Let's build — Open to FDE internships" />
+      <Marquee text="Let's build · Open to FDE internships" />
       <Contact />
     </main>
   );
