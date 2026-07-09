@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const work = getWorkBySlug(slug);
   if (!work) return {};
   const title = isTodo(work.role)
-    ? `Work — ${site.name}`
-    : `${work.role} — ${site.name}`;
+    ? `Work · ${site.name}`
+    : `${work.role} · ${site.name}`;
   return {
     title,
     description: isTodo(work.summary) ? undefined : work.summary,
@@ -42,8 +42,9 @@ function DetailSection({
   );
 }
 
-function ExternalLink({ label, url }: { label: string; url?: string }) {
-  if (!url || isTodo(url)) return <Todo value={url ?? "{{FILL: URL}}"} />;
+function ExternalLink({ label, url }: { label: string; url: string }) {
+  // Real {{FILL}} token → keep the pending badge (defensive; unused today).
+  if (isTodo(url)) return <Todo value={url} />;
   return (
     <a
       href={url}
@@ -62,6 +63,13 @@ export default async function WorkDetailPage({ params }: Params) {
   if (!work) notFound();
 
   const org = "org" in work && work.org ? work.org : undefined;
+
+  // Only surface links that actually exist. An absent optional URL is omitted
+  // entirely (no pending badge); a real {{FILL}} token still renders as pending.
+  const links = [
+    { label: "Live", url: work.liveUrl },
+    { label: "Repo", url: work.repoUrl },
+  ].filter((l): l is { label: string; url: string } => !!l.url);
 
   return (
     <main id="main" className="mx-auto max-w-3xl px-6 pb-32 pt-28 md:pt-36">
@@ -134,12 +142,15 @@ export default async function WorkDetailPage({ params }: Params) {
         </ul>
       </DetailSection>
 
-      <DetailSection title="Links">
-        <div className="flex flex-wrap items-center gap-4">
-          <ExternalLink label="Live" url={work.liveUrl} />
-          <ExternalLink label="Repo" url={work.repoUrl} />
-        </div>
-      </DetailSection>
+      {links.length > 0 && (
+        <DetailSection title="Links">
+          <div className="flex flex-wrap items-center gap-4">
+            {links.map((l) => (
+              <ExternalLink key={l.label} label={l.label} url={l.url} />
+            ))}
+          </div>
+        </DetailSection>
+      )}
     </main>
   );
 }

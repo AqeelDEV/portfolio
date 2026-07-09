@@ -11,7 +11,7 @@ export default function BeyondSection() {
     >
       <div className="mx-auto max-w-7xl px-6">
         <p className="mb-4 text-[0.65rem] uppercase tracking-[0.35em] text-accent/80">
-          07 — Beyond the Code
+          07 · Beyond the Code
         </p>
         <h2
           id="beyond-heading"
